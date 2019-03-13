@@ -1,0 +1,231 @@
+#############################
+##########     Internet
+#############################
+
+net add loopback lo ip address 10.0.0.253/32
+net add bgp autonomous-system 25253
+net add bgp router-id 10.0.0.253
+for i in {1..20}; do net add loopback lo ip address 172.16.$i.1/24; done
+
+net add interface swp1 ip address 10.10.10.0/31
+net add interface swp2 ip address 10.10.10.2/31
+net add bgp neighbor swp1-2 interface remote-as external
+for i in {1..20}; do net add bgp network 172.16.$i.0/24; done
+
+net commit
+
+#############################
+##########     Spine01
+#############################
+
+# Setup BGP Underlay
+net add loopback lo ip address 10.0.0.21/32
+net add bgp autonomous-system 65020
+net add bgp bestpath as-path multipath-relax
+net add bgp router-id 10.0.0.21
+
+# Advertise the loopback
+net add bgp network 10.0.0.21/32
+
+# Setup Neighborships with Leaf01-04 and Exit01-02
+net add bgp neighbor swp1-4,swp29-30 interface remote-as external
+
+# Enable EVPN Address family on the neighborships
+net add bgp evpn neighbor swp1-4,swp29-30 activate
+net add bgp evpn advertise-all-vni
+
+net commit
+
+#############################
+##########     Spine02
+#############################
+
+# Setup BGP Underlay
+net add loopback lo ip address 10.0.0.22/32
+net add bgp autonomous-system 65020
+net add bgp bestpath as-path multipath-relax
+net add bgp router-id 10.0.0.22
+
+# Advertise the loopback
+net add bgp network 10.0.0.22/32
+
+# Setup Neighborships with Leaf01-04 and Exit01-02
+net add bgp neighbor swp1-4,swp29-30 interface remote-as external
+
+# Enable EVPN Address family on the neighborships
+net add bgp evpn neighbor swp1-4,swp29-30 activate
+net add bgp evpn advertise-all-vni
+
+net commit
+
+#############################
+##########     Exit01
+#############################
+
+# Setup BGP Underlay
+net add loopback lo ip address 10.0.0.41/32
+net add bgp autonomous-system 65041
+net add bgp router-id 10.0.0.41
+net add bgp network 10.0.0.41/32
+net add bgp neighbor swp51-52 interface remote-as external
+net add bgp evpn neighbor swp51-52 activate
+net add bgp evpn advertise-all-vni
+net add bgp bestpath as-path multipath-relax
+
+# Setup BGP for VRF "tenant1"
+net add vrf tenant1
+net add interface swp44 vrf tenant1
+net add interface swp44 ip address 10.10.10.1/31
+net add bgp vrf tenant1 autonomous-system 65041
+net add bgp vrf tenant1 bestpath as-path multipath-relax
+net add bgp vrf tenant1 neighbor swp44 interface remote-as external
+net add bgp vrf tenant1 evpn advertise ipv4 unicast
+
+# Setup the L3VNI
+net add vlan 4001 vrf tenant1
+net add vlan 4001 hwaddress 44:38:39:11:00:15
+net add vxlan vni104001 vxlan id 104001
+net add vxlan vni104001 bridge access 4001
+net add vxlan vni104001 bridge learning off
+net add vxlan vni104001 bridge arp-nd-suppress on
+net add vxlan vni104001 vxlan local-tunnelip 10.0.0.41
+net add vrf tenant1 vni 104001
+
+net commit
+
+#############################
+##########     Exit02
+#############################
+
+# Setup BGP Underlay
+net add loopback lo ip address 10.0.0.42/32
+net add bgp autonomous-system 65042
+net add bgp router-id 10.0.0.42
+net add bgp network 10.0.0.42/32
+net add bgp neighbor swp51-52 interface remote-as external
+net add bgp evpn neighbor swp51-52 activate
+net add bgp evpn advertise-all-vni
+net add bgp bestpath as-path multipath-relax
+
+# Setup BGP for VRF "tenant1"
+net add vrf tenant1
+net add interface swp44 vrf tenant1
+net add interface swp44 ip address 10.10.10.3/31
+net add bgp vrf tenant1 autonomous-system 65042
+net add bgp vrf tenant1 bestpath as-path multipath-relax
+net add bgp vrf tenant1 neighbor swp44 interface remote-as external
+net add bgp vrf tenant1 evpn advertise ipv4 unicast
+
+# Setup the L3VNI
+net add vlan 4001 vrf tenant1
+net add vlan 4001 hwaddress 44:38:39:11:00:16
+net add vxlan vni104001 vxlan id 104001
+net add vxlan vni104001 bridge access 4001
+net add vxlan vni104001 bridge learning off
+net add vxlan vni104001 bridge arp-nd-suppress on
+net add vxlan vni104001 vxlan local-tunnelip 10.0.0.42
+net add vrf tenant1 vni 104001
+
+net commit
+
+#############################
+##########     Leaf01
+#############################
+
+# Setup BGP Underlay
+net add loopback lo ip address 10.0.0.11/32
+net add bgp autonomous-system 65011
+net add bgp router-id 10.0.0.11
+net add bgp bestpath as-path multipath-relax
+net add bgp neighbor swp51-52 interface remote-as external
+net add bgp ipv4 unicast network 10.0.0.11/32
+net add bgp l2vpn evpn neighbor swp51-52 activate
+net add bgp l2vpn evpn  advertise-all-vni
+
+# Define VRF and L3VNI
+net add vrf tenant1
+net add vrf tenant1 vni 104001
+net add vxlan vni104001 vxlan id 104001
+net add vxlan vni104001 bridge access 4001
+net add vlan 4001 hwaddress 44:38:39:11:00:11
+net add vlan 4001 vrf tenant1
+
+# Define L2VNI
+net add vxlan vni10100 vxlan id 10100
+net add vxlan vni10100 bridge access 100
+
+# Other Items Need for All VNIs
+net add vxlan vni10100,104001 bridge arp-nd-suppress on
+net add vxlan vni10100,104001 bridge learning off
+net add vxlan vni10100,104001 vxlan local-tunnelip 10.0.0.11
+
+# Create the SVI and Distributed Anycast Gateway
+net add vlan 100 ip address 192.168.100.253/24
+net add vlan 100 ip address-virtual 44:38:39:aa:aa:aa 192.168.100.254/24
+net add vlan 100 vlan-id 100
+net add vlan 100 vlan-raw-device bridge
+net add vlan 100 vrf tenant1
+
+# Define the Host-Facing Port
+net add interface swp1 bridge access 100
+
+net commit
+
+#############################
+##########     Leaf02
+#############################
+
+# Setup BGP Underlay
+net add loopback lo ip address 10.0.0.12/32
+net add bgp autonomous-system 65012
+net add bgp router-id 10.0.0.12
+net add bgp bestpath as-path multipath-relax
+net add bgp neighbor swp51-52 interface remote-as external
+net add bgp ipv4 unicast network 10.0.0.12/32
+net add bgp l2vpn evpn neighbor swp51-52 activate
+net add bgp l2vpn evpn advertise-all-vni
+
+# Define VRF and L3VNI
+net add vrf tenant1
+net add vrf tenant1 vni 104001
+net add vxlan vni104001 vxlan id 104001
+net add vxlan vni104001 bridge access 4001
+net add vlan 4001 hwaddress 44:38:39:11:00:12
+net add vlan 4001 vrf tenant1
+
+# Define L2VNI
+net add vxlan vni10100 vxlan id 10100
+net add vxlan vni10100 bridge access 100
+
+# Other Items Need for All VNIs
+net add vxlan vni10100,104001 bridge arp-nd-suppress on
+net add vxlan vni10100,104001 bridge learning off
+net add vxlan vni10100,104001 vxlan local-tunnelip 10.0.0.12
+
+# Create the SVI and Distributed Anycast Gateway
+net add vlan 100 ip address 192.168.100.253/24
+net add vlan 100 ip address-virtual 44:38:39:aa:aa:aa 192.168.100.254/24
+net add vlan 100 vrf tenant1
+
+# Define the Host-Facing Port
+net add interface swp2 bridge access 100
+
+net commit
+
+#############################
+##########     Server01
+#############################
+
+sudo ip link set up eth1
+sudo ip addr add 192.168.100.1/24 dev eth1
+sudo ip route del default
+sudo ip route add default via 192.168.100.254
+
+#############################
+##########     Server02
+#############################
+
+sudo ip link set up eth2
+sudo ip addr add 192.168.100.2/24 dev eth2
+sudo ip route del default
+sudo ip route add default via 192.168.100.254
