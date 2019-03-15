@@ -186,6 +186,6 @@
          -  add vlan 100 vlan-id 100
          -  add vlan 100 vlan-raw-device bridge
          -  add vlan 100 vrf tenant1
-         -  add interface swp1 bridge access 100
+         -  add interface swp2 bridge access 100
 
        commit: true
