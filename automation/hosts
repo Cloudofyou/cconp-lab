@@ -1,7 +1,7 @@
 # Created by Topology-Converter v4.6.9
 #    Template Revision: v4.6.9
 
-[internet]
+[campus]
 internet ansible_host=192.168.0.253
 
 [spines]
