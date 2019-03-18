@@ -15,8 +15,11 @@ graph vx {
  "leaf02":"swp51" -- "spine01":"swp2"
  "leaf01":"swp52" -- "spine02":"swp1"
  "leaf02":"swp52" -- "spine02":"swp2"
+ "leaf01":"swp49" -- "leaf02":"swp49"
+ "leaf01":"swp50" -- "leaf02":"swp50"
 
  "server01":"eth1" -- "leaf01":"swp1" [left_mac="00:03:00:11:11:01"]
+ "server02":"eth1" -- "leaf01":"swp2" [left_mac="00:03:00:22:22:01"]
  "server02":"eth2" -- "leaf02":"swp2" [left_mac="00:03:00:22:22:02"]
 
  "exit01":"swp51" -- "spine01":"swp30"
