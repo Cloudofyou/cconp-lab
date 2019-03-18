@@ -1,0 +1,106 @@
+- name: Configure CLAG and VRR Switches
+  hosts: switches
+  become: yes
+  gather_facts: yes
+  tasks:
+
+  - name: Initial Switch and Management VRF setup
+    nclu:
+      commit: true
+      description: "Initial Management VRF setup"
+      commands:
+        - add interface eth0 vrf mgmt
+        - add hostname "{{ inventory_hostname }}"
+
+  - name: Deploy Physical Interfaces
+    nclu:
+      commit: true
+      description: "Deploy Interfaces"
+      template: |
+          add interface "{{ item }}"
+          add interface "{{ item }}" post-up ip link set "{{ item }}" promisc on
+    with_items:
+      - "{{ node[inventory_hostname].ports }}"
+
+  - name: Deploy VLANs
+    nclu:
+      commit: true
+      description: "Deploy VLANs"
+      template: |
+         add vlan "{{ item }}"
+    with_items:
+       - "{{ node[inventory_hostname].switching.vlans }}"
+
+  - name: Deploy Bridging configuration
+    nclu:
+      commit: false
+      description: "Deploy Bridging configuration"
+      commands:
+        - add bridge bridge ports "{{ node[inventory_hostname].switching.bridge | join (",") }}"
+
+  - name: Deploy CLAG configuration
+    nclu:
+      commit: false
+      description: "Deploy CLAG configuration"
+      commands:
+        - add bond peerlink bond slaves {{ node[inventory_hostname].mlag.members | join (",") }}
+        - add interface peerlink.4094 ip address {{ node[inventory_hostname].mlag.address }}
+        - add interface peerlink.4094 clag peer-ip {{ node[inventory_hostname].mlag.peerip }}
+        - add interface peerlink.4094 clag backup-ip {{ node[inventory_hostname].mlag.backupip }} vrf mgmt
+        - add interface peerlink.4094 clag sys-mac {{ node[inventory_hostname].mlag.sysmac }}
+        - add interface peerlink.4094 clag priority {{ node[inventory_hostname].mlag.priority }}
+
+  - name: Deploy MLAG Interfaces
+    nclu:
+      commit: false
+      description: "Deploy MLAG Interfaces"
+      template: |
+         add bond {{ item.key }} bond slaves {{ item.value.members }}
+         add bond {{ item.key }} clag id {{ item.value.clagid }}
+         add bond {{ item.key }} bridge access {{ item.value.vlans }}
+    with_dict:
+      - "{{ node[inventory_hostname].mlag.interfaces }}"
+
+  - name: Deploy VRR and SVI configuration
+    nclu:
+        commit: true
+        description: "Deploy VRR and SVI configuration"
+        template: |
+           add vlan {{ item.value.vlan }} ip address {{ item.value.ip }}
+           add vlan {{ item.value.vlan }} ip address-virtual {{ item.value.vrrp.mac }} {{ item.value.vrrp.ip }}
+    with_dict:
+      - "{{ node[inventory_hostname].routing.svi }}"
+
+  - name: Reload Interfaces
+    command: ifreload -a
+
+- name: Configure Server LACP Interfaces
+  hosts: servers
+  become: yes
+  gather_facts: yes
+  tasks:
+
+  - name: Copy Server LACP Interface Config
+    copy:
+      src: configurations/{{ansible_hostname}}/interfaces
+      dest: /etc/network/interfaces
+    register: reboot
+
+  - name: reboot
+    command: /sbin/shutdown -r +1
+    async: 0
+    poll: 0
+    ignore_errors: true
+
+  - name: Sleep for server to disconnect
+    pause:
+      seconds: 20
+
+  - name: Wait for hosts to be up
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      port: 22
+      state: started
+      delay: 30
+      timeout: 300
+    ignore_errors: true

@@ -189,3 +189,35 @@
          -  add interface swp2 bridge access 100
 
        commit: true
+
+- name: Configure Server LACP Interfaces
+  hosts: servers
+  become: yes
+  gather_facts: yes
+  tasks:
+
+  - name: Copy Server LACP Interface Config
+    copy:
+      src: configurations/{{ansible_hostname}}/interfaces
+      dest: /etc/network/interfaces
+    register: reboot
+
+  - name: reboot
+    command: /sbin/shutdown -r +1
+    async: 0
+    poll: 0
+    ignore_errors: true
+
+  - name: Sleep for server to disconnect
+    pause:
+      seconds: 20
+
+  - name: Wait for hosts to be up
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      port: 22
+      state: started
+      delay: 30
+      timeout: 300
+    ignore_errors: true
+
