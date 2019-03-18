@@ -18,11 +18,11 @@ wget -O ./templates/Vagrantfile.j2 https://raw.githubusercontent.com/CumulusNetw
 # cp ./Vagrantfile ./Vagrantfile-large-memory-libvirt
 
 # Write Vagrantfile for Libvirt
-python ./topology_converter.py ./topology.dot -p libvirt -c
+python ./topology_converter.py ./topology.dot -p libvirt
 cp ./Vagrantfile ./Vagrantfile-kvm
 
 # Write Vagrantfile for Virtualbox
-python ./topology_converter.py ./topology.dot -c
+python ./topology_converter.py ./topology.dot
 cp ./Vagrantfile ./Vagrantfile-vbox
 
 rm -rfv ./templates ./topology_converter.py ./topology_converter/
