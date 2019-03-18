@@ -144,15 +144,23 @@
          -  add vlan 4001 vrf tenant1
          -  add vxlan vni10100 vxlan id 10100
          -  add vxlan vni10100 bridge access 100
-         -  add vxlan vni10100,104001 bridge arp-nd-suppress on
-         -  add vxlan vni10100,104001 bridge learning off
-         -  add vxlan vni10100,104001 vxlan local-tunnelip 10.0.0.11
+         -  add vxlan vni10101 vxlan id 10101
+         -  add vxlan vni10101 bridge access 101
+         -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
+         -  add vxlan vni10100,vni10101,104001 bridge learning off
+         -  add vxlan vni10100,vni10101,104001 vxlan local-tunnelip 10.0.0.11
          -  add vlan 100 ip address 192.168.100.253/24
          -  add vlan 100 ip address-virtual 44:38:39:aa:aa:aa 192.168.100.254/24
          -  add vlan 100 vlan-id 100
          -  add vlan 100 vlan-raw-device bridge
          -  add vlan 100 vrf tenant1
+         -  add vlan 101 ip address 192.168.101.253/24
+         -  add vlan 101 ip address-virtual 44:38:39:aa:aa:ab 192.168.101.254/24
+         -  add vlan 101 vlan-id 101
+         -  add vlan 101 vlan-raw-device bridge
+         -  add vlan 101 vrf tenant1
          -  add interface swp1 bridge access 100
+         -  add interface swp2 bridge access 101
 
        commit: true
 
@@ -178,14 +186,22 @@
          -  add vlan 4001 vrf tenant1
          -  add vxlan vni10100 vxlan id 10100
          -  add vxlan vni10100 bridge access 100
-         -  add vxlan vni10100,104001 bridge arp-nd-suppress on
-         -  add vxlan vni10100,104001 bridge learning off
-         -  add vxlan vni10100,104001 vxlan local-tunnelip 10.0.0.12
+         -  add vxlan vni10101 vxlan id 10101
+         -  add vxlan vni10101 bridge access 101
+         -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
+         -  add vxlan vni10100,vni10101,104001 bridge learning off
+         -  add vxlan vni10100,vni10101,104001 vxlan local-tunnelip 10.0.0.12
          -  add vlan 100 ip address 192.168.100.253/24
          -  add vlan 100 ip address-virtual 44:38:39:aa:aa:aa 192.168.100.254/24
          -  add vlan 100 vlan-id 100
          -  add vlan 100 vlan-raw-device bridge
          -  add vlan 100 vrf tenant1
+         -  add vlan 101 ip address 192.168.101.253/24
+         -  add vlan 101 ip address-virtual 44:38:39:aa:aa:ab 192.168.101.254/24
+         -  add vlan 101 vlan-id 101
+         -  add vlan 101 vlan-raw-device bridge
+         -  add vlan 101 vrf tenant1
          -  add interface swp2 bridge access 100
+         -  add interface swp1 bridge access 101
 
        commit: true
