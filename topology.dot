@@ -7,6 +7,8 @@ graph vx {
  "exit02" [function="exit" os="CumulusCommunity/cumulus-vx" version="3.7.3" memory="768" config="./helper_scripts/config_switch.sh" ]
  "server01" [function="host" os="yk0/ubuntu-xenial" memory="512" config="./helper_scripts/config_server.sh" ]
  "server02" [function="host" os="yk0/ubuntu-xenial" memory="512" config="./helper_scripts/config_server.sh" ]
+ "server03" [function="host" os="yk0/ubuntu-xenial" memory="512" config="./helper_scripts/config_server.sh" ]
+ "server04" [function="host" os="yk0/ubuntu-xenial" memory="512" config="./helper_scripts/config_server.sh" ]
  "internet" [function="internet" vagrant="swp48" os="CumulusCommunity/cumulus-vx" version="3.7.3" memory="768" config="./helper_scripts/config_internet.sh" ]
  "oob-mgmt-switch" [function="oob-switch" vagrant="eth0" os="CumulusCommunity/cumulus-vx" version="3.7.3" memory="768" config="./helper_scripts/config_oob_switch.sh" ]
  "oob-mgmt-server" [function="oob-server" vagrant="eth0" os="CumulusCommunity/vx_oob_server" version="1.0.4" memory="1024" config="./helper_scripts/config_oob_server.sh" ]
@@ -18,6 +20,8 @@ graph vx {
 
  "server01":"eth1" -- "leaf01":"swp1" [left_mac="00:03:00:11:11:01"]
  "server02":"eth2" -- "leaf02":"swp2" [left_mac="00:03:00:22:22:02"]
+ "server03":"eth2" -- "leaf01":"swp2" [left_mac="00:03:00:33:33:01"]
+ "server04":"eth1" -- "leaf02":"swp1" [left_mac="00:03:00:33:33:02"]
 
  "exit01":"swp51" -- "spine01":"swp30"
  "exit01":"swp52" -- "spine02":"swp30"
