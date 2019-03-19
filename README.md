@@ -10,9 +10,9 @@ Test environment for CCONP scenarios
 
 ### Initializing the demo environment:
 
-$ git clone -b v3 https://github.com/Cloudofyou/cconp-lab ./cconp-lab-v3/n
-$ cd cconp-lab-v3/n
-$ ./bringitup/n
+$ git clone -b v3 https://github.com/Cloudofyou/cconp-lab ./cconp-lab-v3
+$ cd cconp-lab-v3
+$ ./bringitup
 $ vagrant ssh oob-mgmt-server
 $ git clone -b v3 https://github.com/Cloudofyou/cconp-lab
 $ cd cconp-lab/automation
