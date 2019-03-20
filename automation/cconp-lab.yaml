@@ -56,7 +56,7 @@
          -  add bgp evpn neighbor swp1-6 activate
          -  add bgp evpn advertise-all-vni
 
-      commit: true
+       commit: true
 
 - hosts: exit01
   tasks:
@@ -88,7 +88,7 @@
           -  add vxlan vni104001 vxlan local-tunnelip 10.0.0.41
           -  add vrf tenant1 vni 104001
 
-      commit: true
+        commit: true
 
 - hosts: exit02
   tasks:
@@ -120,7 +120,7 @@
           -  add vxlan vni104001 vxlan local-tunnelip 10.0.0.42
           -  add vrf tenant1 vni 104001
 
-      commit: true
+        commit: true
 
 - hosts: leaf01
   tasks:
@@ -144,7 +144,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
@@ -162,7 +162,7 @@
           -  add interface swp1 bridge access 100
           -  add interface swp2 bridge access 101
 
-      commit: true
+        commit: true
 
 - hosts: leaf02
   tasks:
@@ -186,7 +186,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
@@ -204,7 +204,7 @@
           -  add interface swp1 bridge access 100
           -  add interface swp2 bridge access 101
 
-      commit: true
+        commit: true
 
 - hosts: leaf03
   tasks:
@@ -228,7 +228,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
@@ -246,7 +246,7 @@
           -  add interface swp1 bridge access 100
           -  add interface swp2 bridge access 101
 
-      commit: true
+        commit: true
 
 - hosts: leaf04
   tasks:
@@ -270,7 +270,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
@@ -288,4 +288,4 @@
           -  add interface swp1 bridge access 100
           -  add interface swp2 bridge access 101
 
-      commit: true
+        commit: true
