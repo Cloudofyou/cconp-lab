@@ -144,7 +144,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
@@ -186,7 +186,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
@@ -228,7 +228,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
@@ -270,7 +270,7 @@
           -  add vlan 4001 vrf tenant1
           -  add vxlan vni10100 vxlan id 10100
           -  add vxlan vni10100 bridge access 100
-          -  add vxlan vni10101 vxlan id vni10101
+          -  add vxlan vni10101 vxlan id 10101
           -  add vxlan vni10101 bridge access 101
           -  add vxlan vni10100,vni10101,104001 bridge arp-nd-suppress on
           -  add vxlan vni10100,vni10101,104001 bridge learning off
